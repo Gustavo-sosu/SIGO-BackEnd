@@ -23,7 +23,7 @@ namespace SIGO.Controllers
             _response = new Response();
         }
 
-        [HttpGet("GetServico")]
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var servicoDTO = await _servicoService.GetAll();
@@ -35,7 +35,7 @@ namespace SIGO.Controllers
             return Ok(_response);
         }
 
-        [HttpGet("GetServicoById{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdWithDetails(int id)
         {
             var servicoDto = await _servicoService.GetByIdWithDetails(id);
@@ -46,7 +46,7 @@ namespace SIGO.Controllers
             return Ok(servicoDto);
         }
 
-        [HttpGet("GetServicoByhNome/{nome}")]
+        [HttpGet("{nome}")]
         public async Task<IActionResult> GetByNameWithDetails(string nome)
         {
             var servicoDto = await _servicoService.GetByNameWithDetails(nome);
@@ -57,7 +57,7 @@ namespace SIGO.Controllers
             return Ok(servicoDto);
         }
 
-        [HttpPost("PostService")]
+        [HttpPost]
         public async Task<IActionResult> Post(ServicoDTO serviceDTO)
         {
             if (serviceDTO is null)
@@ -94,7 +94,7 @@ namespace SIGO.Controllers
             }
         }
 
-        [HttpPut("PutServico{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, ServicoDTO servicoDTO)
         {
             if (servicoDTO is null)
@@ -140,7 +140,7 @@ namespace SIGO.Controllers
             }
         }
 
-        [HttpDelete("DeleteServico{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try

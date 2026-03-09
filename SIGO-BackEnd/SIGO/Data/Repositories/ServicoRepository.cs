@@ -14,19 +14,23 @@ namespace SIGO.Data.Repositories
         }
         public override async Task<IEnumerable<Servico>> Get()
         {
-            return await _context.Servicos.ToListAsync();
+            return await _context.Servicos
+                .Include(s => s.Funcionario_Servicos)
+                .ToListAsync();
         }
 
 
         public async Task<Servico?> GetByIdWithDetails(int id)
         {
             return await _context.Servicos
+                .Include(s => s.Funcionario_Servicos)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<IEnumerable<Servico>> GetByNameWithDetails(string nome)
         {
             return await _context.Servicos
+                .Include(s => s.Funcionario_Servicos)
                 .Where(c => c.Nome.Contains(nome))
                 .ToListAsync();
         }

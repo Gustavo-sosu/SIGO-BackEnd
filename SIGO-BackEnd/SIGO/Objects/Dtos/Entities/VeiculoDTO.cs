@@ -1,4 +1,6 @@
-﻿namespace SIGO.Objects.Dtos.Entities
+﻿using SIGO.Objects.Enums;
+
+namespace SIGO.Objects.Dtos.Entities
 {
     public class VeiculoDTO
     {
@@ -11,7 +13,7 @@
         public int Quilometragem { get; set; }
         public string Combustivel { get; set; }
         public string Seguro { get; set; }
-        public int Status { get; set; }
+        public Situacao Situacao { get; set; }
         public List<CorDTO> Cores { get; set; } = new();
     }
 }

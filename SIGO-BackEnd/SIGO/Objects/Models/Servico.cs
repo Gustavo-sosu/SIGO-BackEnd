@@ -20,13 +20,21 @@ namespace SIGO.Objects.Models
 
         [Column("garantia")]
         public DateOnly Garantia { get; set; }
-        public Servico(int id, string nome, string descricao, double valor, DateOnly garantia)
+
+        public ICollection<Funcionario_Servico> Funcionario_Servicos { get; set; } = new List<Funcionario_Servico>();
+
+        public Servico()
+        {
+        }
+
+        public Servico(int id, string nome, string descricao, double valor, DateOnly garantia, ICollection<Funcionario_Servico> funcionario_Servico)
         {
             Id = id;
             Nome = nome;
             Descricao = descricao;
             Valor = valor;
             Garantia = garantia;
+            Funcionario_Servicos = funcionario_Servico;
         }
     }
 }

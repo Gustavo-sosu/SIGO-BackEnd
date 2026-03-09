@@ -34,13 +34,19 @@ namespace SIGO.Services.Entities
             await _repository.Add(entity);
         }
 
-        public async Task Update(TDto entityDTO, int id)
+        public virtual async Task Update(TDto entityDTO, int id)
         {
             var existingEntity = await _repository.GetById(id);
 
             if (existingEntity == null)
             {
                 throw new KeyNotFoundException($"Entity with id {id} not found.");
+            }
+
+            var idProperty = typeof(TDto).GetProperty("Id");
+            if (idProperty != null && idProperty.CanWrite)
+            {
+                idProperty.SetValue(entityDTO, id);
             }
 
             var entity = _mapper.Map<T>(entityDTO);

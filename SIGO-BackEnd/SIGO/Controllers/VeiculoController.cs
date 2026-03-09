@@ -31,7 +31,7 @@ namespace SIGO.Controllers
             return Ok(_response);
         }
 
-        [HttpGet("placa/{placa}")]
+        [HttpGet("{placa}")]
         public async Task<IActionResult> GetByPlaca(string placa)
         {
             // Busca por placas que contenham a string fornecida
@@ -51,7 +51,7 @@ namespace SIGO.Controllers
             return Ok(_response);
         }
 
-        [HttpGet("tipo/{tipo}")]
+        [HttpGet("{tipo}")]
         public async Task<IActionResult> GetByTipo(string tipo)
         {
             // Busca por tipos que contenham a string fornecida

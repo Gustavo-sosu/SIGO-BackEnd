@@ -1,90 +1,80 @@
-﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SIGO.Objects.Contracts;
 using SIGO.Objects.Dtos.Entities;
-using SIGO.Services.Entities;
 using SIGO.Services.Interfaces;
 
 namespace SIGO.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FuncionarioController : ControllerBase
+    public class PedidoController : ControllerBase
     {
-        private readonly IFuncionarioService _funcionarioService;
+        private readonly IPedidoService _pedidoService;
         private readonly Response _response;
-        private readonly IMapper _mapper;
 
-        public FuncionarioController(IFuncionarioService funcionarioService, IMapper mapper)
+        public PedidoController(IPedidoService pedidoService)
         {
-            _funcionarioService = funcionarioService;
-            _mapper = mapper;
+            _pedidoService = pedidoService;
             _response = new Response();
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var funcionarioDTO = await _funcionarioService.GetAll();
+            var pedidos = await _pedidoService.GetAll();
 
             _response.Code = ResponseEnum.SUCCESS;
-            _response.Data = funcionarioDTO;
-            _response.Message = "Funcionário listados com sucesso";
+            _response.Data = pedidos;
+            _response.Message = "Pedidos listados com sucesso";
 
             return Ok(_response);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> FetFuncionarioById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var funcionarioDTO = await _funcionarioService.GetById(id);
+            var pedido = await _pedidoService.GetById(id);
 
-            if (funcionarioDTO is null)
-                return NotFound(new { Message = "Funcionário não encontrado" });
+            if (pedido is null)
+            {
+                _response.Code = ResponseEnum.NOT_FOUND;
+                _response.Data = null;
+                _response.Message = "Pedido não encontrado";
+                return NotFound(_response);
+            }
 
-            return Ok(funcionarioDTO);
-        }
-
-        [HttpGet("{nome}")]
-        public async Task<IActionResult> GetFuncionarioByNome(string nome)
-        {
-            var clientesDto = await _funcionarioService.GetFuncionarioByNome(nome);
-
-            if (!clientesDto.Any())
-                return NotFound(new { Message = "Nenhum funcionário encontrado com esse nome" });
-
-            return Ok(clientesDto);
+            _response.Code = ResponseEnum.SUCCESS;
+            _response.Data = pedido;
+            _response.Message = "Pedido encontrado com sucesso";
+            return Ok(_response);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(FuncionarioDTO funcionarioDTO)
+        public async Task<IActionResult> Post([FromBody] PedidoDTO pedidoDTO)
         {
-            if (funcionarioDTO is null)
+            if (pedidoDTO is null)
             {
                 _response.Code = ResponseEnum.INVALID;
                 _response.Data = null;
                 _response.Message = "Dados inválidos";
-
                 return BadRequest(_response);
             }
 
             try
             {
-                funcionarioDTO.Id = 0;
-
-                await _funcionarioService.Create(funcionarioDTO);
+                pedidoDTO.Id = 0;
+                await _pedidoService.Create(pedidoDTO);
 
                 _response.Code = ResponseEnum.SUCCESS;
-                _response.Data = funcionarioDTO;
-                _response.Message = "Funcionário cadastrado com sucesso";
-
+                _response.Data = pedidoDTO;
+                _response.Message = "Pedido cadastrado com sucesso";
                 return Ok(_response);
             }
             catch (Exception ex)
             {
                 _response.Code = ResponseEnum.ERROR;
-                _response.Message = "Não foi possível cadastrar o funcionário";
+                _response.Message = "Não foi possível cadastrar o pedido";
                 _response.Data = new
                 {
                     ErrorMessage = ex.Message,
@@ -95,41 +85,38 @@ namespace SIGO.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, FuncionarioDTO funcionarioDTO)
+        public async Task<IActionResult> Put(int id, [FromBody] PedidoDTO pedidoDTO)
         {
-            if (funcionarioDTO is null)
+            if (pedidoDTO is null)
             {
                 _response.Code = ResponseEnum.INVALID;
                 _response.Data = null;
                 _response.Message = "Dados inválidos";
-
                 return BadRequest(_response);
             }
 
             try
             {
-
-                var existingFuncionarioDTO = await _funcionarioService.GetById(id);
-                if (existingFuncionarioDTO is null)
+                var existingPedido = await _pedidoService.GetById(id);
+                if (existingPedido is null)
                 {
                     _response.Code = ResponseEnum.NOT_FOUND;
                     _response.Data = null;
-                    _response.Message = "O funcionário informado não existe";
+                    _response.Message = "Pedido não encontrado";
                     return NotFound(_response);
                 }
 
-                await _funcionarioService.Update(funcionarioDTO, id);
+                await _pedidoService.Update(pedidoDTO, id);
 
                 _response.Code = ResponseEnum.SUCCESS;
-                _response.Data = funcionarioDTO;
-                _response.Message = "Funcionário atualizado com sucesso";
-
+                _response.Data = pedidoDTO;
+                _response.Message = "Pedido atualizado com sucesso";
                 return Ok(_response);
             }
             catch (Exception ex)
             {
                 _response.Code = ResponseEnum.ERROR;
-                _response.Message = "Ocorreu um erro ao tentar atualizar os dados do funcionário";
+                _response.Message = "Ocorreu um erro ao atualizar o pedido";
                 _response.Data = new
                 {
                     ErrorMessage = ex.Message,
@@ -140,35 +127,34 @@ namespace SIGO.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteFuncionario(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                var clienteDTO = await _funcionarioService.GetById(id);
-
-                if (clienteDTO is null)
+                var existingPedido = await _pedidoService.GetById(id);
+                if (existingPedido is null)
                 {
                     _response.Code = ResponseEnum.NOT_FOUND;
                     _response.Data = null;
-                    _response.Message = "Funcionário não encontrado";
+                    _response.Message = "Pedido não encontrado";
                     return NotFound(_response);
                 }
 
-                await _funcionarioService.Remove(id);
+                await _pedidoService.Remove(id);
 
                 _response.Code = ResponseEnum.SUCCESS;
                 _response.Data = null;
-                _response.Message = "Funcionário deletado com sucesso";
+                _response.Message = "Pedido removido com sucesso";
                 return Ok(_response);
             }
             catch (Exception ex)
             {
                 _response.Code = ResponseEnum.ERROR;
-                _response.Message = "Ocorreu um erro ao deletar o cliente";
+                _response.Message = "Ocorreu um erro ao deletar o pedido";
                 _response.Data = new
                 {
                     ErrorMessage = ex.Message,
-                    StackTrace = ex.StackTrace ?? "No stack trace disponível"
+                    StackTrace = ex.StackTrace ?? "No stack trace available"
                 };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }

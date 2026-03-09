@@ -3,64 +3,41 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SIGO.Objects.Contracts;
 using SIGO.Objects.Dtos.Entities;
-using SIGO.Services.Entities;
 using SIGO.Services.Interfaces;
 
 namespace SIGO.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FuncionarioController : ControllerBase
+    public class PecaController : ControllerBase
     {
-        private readonly IFuncionarioService _funcionarioService;
+        private readonly IPecaService _pecaService;
         private readonly Response _response;
         private readonly IMapper _mapper;
 
-        public FuncionarioController(IFuncionarioService funcionarioService, IMapper mapper)
+        public PecaController(IPecaService pecaService, IMapper mapper)
         {
-            _funcionarioService = funcionarioService;
+            _pecaService = pecaService;
             _mapper = mapper;
             _response = new Response();
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var funcionarioDTO = await _funcionarioService.GetAll();
-
-            _response.Code = ResponseEnum.SUCCESS;
-            _response.Data = funcionarioDTO;
-            _response.Message = "Funcionário listados com sucesso";
-
-            return Ok(_response);
-        }
-
         [HttpGet("{id}")]
-        public async Task<IActionResult> FetFuncionarioById(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var funcionarioDTO = await _funcionarioService.GetById(id);
+            var clienteDto = await _pecaService.GetById(id);
 
-            if (funcionarioDTO is null)
-                return NotFound(new { Message = "Funcionário não encontrado" });
+            if (clienteDto is null)
+                return NotFound(new { Message = "Peça não encontrada" });
 
-            return Ok(funcionarioDTO);
+            return Ok(clienteDto);
         }
 
-        [HttpGet("{nome}")]
-        public async Task<IActionResult> GetFuncionarioByNome(string nome)
-        {
-            var clientesDto = await _funcionarioService.GetFuncionarioByNome(nome);
-
-            if (!clientesDto.Any())
-                return NotFound(new { Message = "Nenhum funcionário encontrado com esse nome" });
-
-            return Ok(clientesDto);
-        }
 
         [HttpPost]
-        public async Task<IActionResult> Post(FuncionarioDTO funcionarioDTO)
+        public async Task<IActionResult> Post(PecaDTO pecaDTO)
         {
-            if (funcionarioDTO is null)
+            if (pecaDTO is null)
             {
                 _response.Code = ResponseEnum.INVALID;
                 _response.Data = null;
@@ -71,20 +48,20 @@ namespace SIGO.Controllers
 
             try
             {
-                funcionarioDTO.Id = 0;
+                pecaDTO.Id = 0;
 
-                await _funcionarioService.Create(funcionarioDTO);
+                await _pecaService.Create(pecaDTO);
 
                 _response.Code = ResponseEnum.SUCCESS;
-                _response.Data = funcionarioDTO;
-                _response.Message = "Funcionário cadastrado com sucesso";
+                _response.Data = pecaDTO;
+                _response.Message = "Peça cadastrada com sucesso";
 
                 return Ok(_response);
             }
             catch (Exception ex)
             {
                 _response.Code = ResponseEnum.ERROR;
-                _response.Message = "Não foi possível cadastrar o funcionário";
+                _response.Message = "Não foi possível cadastrar a peça";
                 _response.Data = new
                 {
                     ErrorMessage = ex.Message,
@@ -95,9 +72,9 @@ namespace SIGO.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, FuncionarioDTO funcionarioDTO)
+        public async Task<IActionResult> Put(int id, PecaDTO pecaDTO)
         {
-            if (funcionarioDTO is null)
+            if (pecaDTO is null)
             {
                 _response.Code = ResponseEnum.INVALID;
                 _response.Data = null;
@@ -108,28 +85,27 @@ namespace SIGO.Controllers
 
             try
             {
-
-                var existingFuncionarioDTO = await _funcionarioService.GetById(id);
-                if (existingFuncionarioDTO is null)
+                var existingClienteDTO = await _pecaService.GetById(id);
+                if (existingClienteDTO is null)
                 {
                     _response.Code = ResponseEnum.NOT_FOUND;
                     _response.Data = null;
-                    _response.Message = "O funcionário informado não existe";
+                    _response.Message = "A peça informada não existe";
                     return NotFound(_response);
                 }
 
-                await _funcionarioService.Update(funcionarioDTO, id);
+                await _pecaService.Update(pecaDTO, id);
 
                 _response.Code = ResponseEnum.SUCCESS;
-                _response.Data = funcionarioDTO;
-                _response.Message = "Funcionário atualizado com sucesso";
+                _response.Data = pecaDTO;
+                _response.Message = "Peça atualizada com sucesso";
 
                 return Ok(_response);
             }
             catch (Exception ex)
             {
                 _response.Code = ResponseEnum.ERROR;
-                _response.Message = "Ocorreu um erro ao tentar atualizar os dados do funcionário";
+                _response.Message = "Ocorreu um erro ao tentar atualizar os dados da peça";
                 _response.Data = new
                 {
                     ErrorMessage = ex.Message,
@@ -140,31 +116,31 @@ namespace SIGO.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteFuncionario(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                var clienteDTO = await _funcionarioService.GetById(id);
+                var clienteDTO = await _pecaService.GetById(id);
 
                 if (clienteDTO is null)
                 {
                     _response.Code = ResponseEnum.NOT_FOUND;
                     _response.Data = null;
-                    _response.Message = "Funcionário não encontrado";
+                    _response.Message = "Peça não encontrada";
                     return NotFound(_response);
                 }
 
-                await _funcionarioService.Remove(id);
+                await _pecaService.Remove(id);
 
                 _response.Code = ResponseEnum.SUCCESS;
                 _response.Data = null;
-                _response.Message = "Funcionário deletado com sucesso";
+                _response.Message = "Peça deletada com sucesso";
                 return Ok(_response);
             }
             catch (Exception ex)
             {
                 _response.Code = ResponseEnum.ERROR;
-                _response.Message = "Ocorreu um erro ao deletar o cliente";
+                _response.Message = "Ocorreu um erro ao deletar a peça";
                 _response.Data = new
                 {
                     ErrorMessage = ex.Message,

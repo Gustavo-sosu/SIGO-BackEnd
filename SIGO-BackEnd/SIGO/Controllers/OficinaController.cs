@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SIGO.Objects.Contracts;
 using SIGO.Objects.Dtos.Entities;
@@ -8,21 +9,21 @@ namespace SIGO.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CorController : ControllerBase
+    public class OficinaController : ControllerBase
     {
-        private readonly ICorService _corService;
+        private readonly IOficinaService _oficinaService;
         private readonly Response _response;
 
-        public CorController(ICorService corService, IMapper mapper)
+        public OficinaController(IOficinaService oficinaService, IMapper mapper)
         {
-            _corService = corService;
+            _oficinaService = oficinaService;
             _response = new Response();
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var cores = await _corService.GetAll();
+            var cores = await _oficinaService.GetAll();
 
             _response.Code = ResponseEnum.SUCCESS;
             _response.Data = cores;
@@ -34,7 +35,7 @@ namespace SIGO.Controllers
         [HttpGet("{nome}")]
         public async Task<IActionResult> GetByName(string nome)
         {
-            var cores = await _corService.GetByName(nome);
+            var cores = await _oficinaService.GetByName(nome);
 
             if (!cores.Any())
             {
@@ -51,16 +52,16 @@ namespace SIGO.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CorDTO corDto)
+        public async Task<IActionResult> Create(OficinaDTO oficinaDto)
         {
-            await _corService.Create(corDto);
+            await _oficinaService.Create(oficinaDto);
             return Ok(new { Message = "Cor cadastrada com sucesso" });
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] CorDTO corDto)
+        public async Task<IActionResult> Update(int id, [FromBody] OficinaDTO oficinaDto)
         {
-            if (corDto == null)
+            if (oficinaDto == null)
             {
                 _response.Code = ResponseEnum.INVALID;
                 _response.Data = null;
@@ -69,11 +70,11 @@ namespace SIGO.Controllers
                 return BadRequest(_response);
             }
             // força o id da URL no DTO (evita mismatch)
-            corDto.Id = id;
+            oficinaDto.Id = id;
 
             try
             {
-                await _corService.UpdateCor(corDto, id);
+                await _oficinaService.Update(oficinaDto, id);
                 return Ok(new { Message = "Cor atualizada com sucesso" });
             }
             catch (KeyNotFoundException)
@@ -85,7 +86,7 @@ namespace SIGO.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _corService.Remove(id);
+            await _oficinaService.Remove(id);
             return Ok(new { Message = "Cor removida com sucesso" });
         }
     }
