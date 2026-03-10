@@ -17,6 +17,8 @@ namespace SIGO.Objects.Models
         [Column("tipoMarca")]
         public string TipoMarca { get; set; }
 
+        public ICollection<Peca> Pecas { get; set; } = new List<Peca>();
+
         public Marca() { }
 
         public Marca(int idMarca, string nomeMarca, string descMarca, string tipoMarca)

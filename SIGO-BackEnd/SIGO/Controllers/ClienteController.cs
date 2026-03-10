@@ -13,6 +13,7 @@ namespace SIGO.Controllers
     public class ClienteController : ControllerBase
     {
         private readonly IClienteService _clienteService;
+        private readonly ITelefoneService _telefoneService;
         private readonly Response _response;
         private readonly IMapper _mapper;
 
@@ -23,7 +24,7 @@ namespace SIGO.Controllers
             _response = new Response();
         }
 
-        [HttpGet("GetCliente")]
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var clienteDTO = await _clienteService.GetAll();
@@ -35,7 +36,7 @@ namespace SIGO.Controllers
             return Ok(_response);
         }
 
-        [HttpGet("GetClienteById{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdWithDetails(int id)
         {
             var clienteDto = await _clienteService.GetByIdWithDetails(id);
@@ -46,7 +47,7 @@ namespace SIGO.Controllers
             return Ok(clienteDto);
         }
 
-        [HttpGet("GetClienteByhNome/{nome}")]
+        [HttpGet("{nome}")]
         public async Task<IActionResult> GetByNameWithDetails(string nome)
         {
             var clientesDto = await _clienteService.GetByNameWithDetails(nome);
@@ -57,7 +58,7 @@ namespace SIGO.Controllers
             return Ok(clientesDto);
         }
 
-        [HttpPost("PostCliente")]
+        [HttpPost]
         public async Task<IActionResult> Post(ClienteDTO clienteDTO)
         {
             if (clienteDTO is null)
@@ -72,8 +73,6 @@ namespace SIGO.Controllers
             try
             {
                 clienteDTO.Id = 0;
-
-                clienteDTO.Telefones = null;
 
                 await _clienteService.Create(clienteDTO);
 
@@ -96,8 +95,8 @@ namespace SIGO.Controllers
             }
         }
 
-        [HttpPut("PutCliente{id}")]
-        public async Task<IActionResult> Put(int id, ClienteDTO clienteDTO)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put([FromRoute] int id, [FromBody] ClienteDTO clienteDTO)
         {
             if (clienteDTO is null)
             {
@@ -110,8 +109,6 @@ namespace SIGO.Controllers
 
             try
             {
-                clienteDTO.Telefones = null;
-
                 var existingClienteDTO = await _clienteService.GetById(id);
                 if (existingClienteDTO is null)
                 {
@@ -120,6 +117,7 @@ namespace SIGO.Controllers
                     _response.Message = "O cliente informado não existe";
                     return NotFound(_response);
                 }
+
 
                 await _clienteService.Update(clienteDTO, id);
 
@@ -142,7 +140,7 @@ namespace SIGO.Controllers
             }
         }
 
-        [HttpDelete("DeleteCliente{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try

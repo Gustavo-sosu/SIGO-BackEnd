@@ -10,6 +10,6 @@ namespace SIGO.Objects.Dtos.Entities
         public string Cpf { get; set; }
         public string Cargo { get; set; }
         public string Email { get; set; }
-        public int Situacao { get; set; }
+        public Situacao Situacao { get; set; }
     }
 }

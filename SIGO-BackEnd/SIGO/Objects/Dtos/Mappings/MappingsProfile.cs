@@ -21,7 +21,13 @@ namespace SIGO.Objects.Dtos.Mappings
             CreateMap<Cor, CorDTO>().ReverseMap();
 
             CreateMap<Servico, ServicoDTO>().ReverseMap();
+            CreateMap<Funcionario_Servico, Funcionario_ServicoDTO>().ReverseMap();
             CreateMap<Funcionario, FuncionarioDTO>().ReverseMap();
+            CreateMap<Oficina, OficinaDTO>().ReverseMap();
+            CreateMap<Peca, PecaDTO>().ReverseMap();
+            CreateMap<Pedido_Peca, Pedido_PecaDTO>().ReverseMap();
+            CreateMap<Pedido_Servico, Pedido_ServicoDTO>().ReverseMap();
+            CreateMap<Pedido, PedidoDTO>().ReverseMap();
         }
     }
 }

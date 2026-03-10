@@ -23,7 +23,7 @@ namespace SIGO.Controllers
             _response = new Response();
         }
 
-        [HttpGet("GetTelefoneById{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             var clienteDto = await _telefoneService.GetById(id);
@@ -34,7 +34,7 @@ namespace SIGO.Controllers
             return Ok(clienteDto);
         }
 
-        [HttpGet("GetTelefoneByNomeCliente/{nome}")]
+        [HttpGet("{nome}")]
         public async Task<IActionResult> GetByNameWithDetails(string nome)
         {
             var clientesDto = await _telefoneService.GetTelefoneByNome(nome);
@@ -45,7 +45,7 @@ namespace SIGO.Controllers
             return Ok(clientesDto);
         }
 
-        [HttpPost("PostCliente")]
+        [HttpPost]
         public async Task<IActionResult> Post(TelefoneDTO telefoneDTO)
         {
             if (telefoneDTO is null)
@@ -82,7 +82,7 @@ namespace SIGO.Controllers
             }
         }
 
-        [HttpPut("PutCliente{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, TelefoneDTO telefoneDTO)
         {
             if (telefoneDTO is null)
@@ -126,7 +126,7 @@ namespace SIGO.Controllers
             }
         }
 
-        [HttpDelete("DeleteTelefone{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try

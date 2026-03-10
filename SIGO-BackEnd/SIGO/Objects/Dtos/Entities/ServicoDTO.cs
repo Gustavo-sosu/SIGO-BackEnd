@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace SIGO.Objects.Dtos.Entities
+﻿namespace SIGO.Objects.Dtos.Entities
 {
     public class ServicoDTO
     {
@@ -9,6 +7,9 @@ namespace SIGO.Objects.Dtos.Entities
         public string Descricao { get; set; }
         public double Valor { get; set; }
         public DateOnly Garantia { get; set; }
+
+        public List<Funcionario_ServicoDTO> Funcionario_Servicos { get; set; } = new();
+
 
 
     }

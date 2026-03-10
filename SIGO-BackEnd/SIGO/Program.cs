@@ -42,6 +42,15 @@ builder.Services.AddScoped<ICorRepository, CorRepository>();
 builder.Services.AddScoped<IFuncionarioService, FuncionarioService>();
 builder.Services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
 
+builder.Services.AddScoped<IPecaService, PecaService>();
+builder.Services.AddScoped<IPecaRepository, PecaRepository>();
+
+builder.Services.AddScoped<IOficinaService, OficinaService>();
+builder.Services.AddScoped<IOficinaRepository, OficinaRepository>();
+
+builder.Services.AddScoped<IPedidoService, PedidoService>();
+builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

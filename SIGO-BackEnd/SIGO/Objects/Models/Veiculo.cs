@@ -37,17 +37,18 @@ namespace SIGO.Objects.Models
         [Column("status")]
         public Status Status { get; set; }
 
-        [Column("Cliente")]
         public ICollection<Cliente> Cliente { get; set; } = new List<Cliente>();
 
-        [Column("cor")]
         public ICollection<Cor> Cor { get; set; } = new List<Cor>();
+
+        public ICollection<Marca> Marcas { get; set; } = new List<Marca>();
 
         public Veiculo()
         {
 
         }
-        public Veiculo(int id, string nomeVeiculo, string tipoVeiculo, string placaVeiculo, string chassiVeiculo, int anoFab, int quilometragem, string combustivel, string seguro, Status status)
+        public Veiculo(int id, string nomeVeiculo, string tipoVeiculo, string placaVeiculo, string chassiVeiculo, int anoFab, int quilometragem,
+            string combustivel, string seguro, Status status)
         {
             Id = id;
             NomeVeiculo = nomeVeiculo;

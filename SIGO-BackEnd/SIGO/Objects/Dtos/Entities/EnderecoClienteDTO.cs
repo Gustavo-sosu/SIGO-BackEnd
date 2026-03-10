@@ -9,7 +9,7 @@ namespace SIGO.Objects.Dtos.Entities
         public int ClienteId { get; set; }
         
         public int EnderecoId { get; set; }
-        public EnderecoDTO Endereco { get; set; } // <- usar DTO
+        public EnderecoDTO Endereco { get; set; }
     }
 
 }

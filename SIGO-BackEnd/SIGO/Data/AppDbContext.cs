@@ -15,6 +15,9 @@ namespace SIGO.Data
         public DbSet<Veiculo> Veiculos { get; set; }
         public DbSet<Cor> Cores { get; set; }
         public DbSet<Funcionario> Funcionarios { get; set; }
+        public DbSet<Peca> Pecas { get; set; }
+        public DbSet<Oficina> Oficinas { get; set; }
+        public DbSet<Pedido> Pedidos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,6 +31,48 @@ namespace SIGO.Data
             VeiculoBuilder.Build(modelBuilder);
             CorBuilder.Build(modelBuilder);
             FuncionarioBuilder.Build(modelBuilder);
+            PecaBuilder.Build(modelBuilder);
+            OficinaBuilder.Build(modelBuilder);
+            PedidoBuilder.Build(modelBuilder);
+
+            modelBuilder.Entity<Funcionario_Servico>()
+                .HasKey(fs => new { fs.IdFuncionario, fs.IdServico });
+
+            modelBuilder.Entity<Funcionario_Servico>()
+                .HasOne(fs => fs.Funcionario)
+                .WithMany()
+                .HasForeignKey(fs => fs.IdFuncionario);
+
+            modelBuilder.Entity<Funcionario_Servico>()
+                .HasOne(fs => fs.Servico)
+                .WithMany(s => s.Funcionario_Servicos)
+                .HasForeignKey(fs => fs.IdServico);
+
+            modelBuilder.Entity<Pedido_Peca>()
+                .HasKey(pp => new { pp.IdPedido, pp.IdPeca });
+
+            modelBuilder.Entity<Pedido_Peca>()
+                .HasOne(pp => pp.Pedido)
+                .WithMany(p => p.Pedido_Pecas)
+                .HasForeignKey(pp => pp.IdPedido);
+
+            modelBuilder.Entity<Pedido_Peca>()
+                .HasOne(pp => pp.Peca)
+                .WithMany()
+                .HasForeignKey(pp => pp.IdPeca);
+
+            modelBuilder.Entity<Pedido_Servico>()
+                .HasKey(ps => new { ps.IdPedido, ps.IdServico });
+
+            modelBuilder.Entity<Pedido_Servico>()
+                .HasOne(ps => ps.Pedido)
+                .WithMany(p => p.Pedido_Servicos)
+                .HasForeignKey(ps => ps.IdPedido);
+
+            modelBuilder.Entity<Pedido_Servico>()
+                .HasOne(ps => ps.Servico)
+                .WithMany()
+                .HasForeignKey(ps => ps.IdServico);
         }
     }
 }

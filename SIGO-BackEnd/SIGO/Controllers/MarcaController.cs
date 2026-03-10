@@ -40,7 +40,7 @@ namespace SIGO.Controllers
             return Ok(marcaDto);
         }
 
-        [HttpGet("nome/{nomeMarca}")]
+        [HttpGet("{nomeMarca}")]
         public async Task<IActionResult> GetByName(string nomeMarca)
         {
             var marcasDto = await _marcaService.GetByName(nomeMarca);
