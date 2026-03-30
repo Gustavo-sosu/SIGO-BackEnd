@@ -64,10 +64,7 @@ namespace SIGO.Tests.Controllers
         }
 
         [Theory]
-        [InlineData("'; DROP TABLE pedido; --")]
-        [InlineData("<script>alert('xss')</script>")]
-        [InlineData("../../../../windows/system32")]
-        [InlineData("$(rm -rf /)")]
+        [MemberData(nameof(ObservacaoPayloadsParaTdd))]
         public async Task Post_DeveProcessarPayloadMaliciosoSemFalha(string payload)
         {
             var dto = CriarPedidoDto();
@@ -83,7 +80,11 @@ namespace SIGO.Tests.Controllers
             var ok = Assert.IsType<OkObjectResult>(result);
             var response = Assert.IsType<Response>(ok.Value);
             Assert.Equal(ResponseEnum.SUCCESS, response.Code);
+            var responseDto = Assert.IsType<PedidoDTO>(response.Data);
+            Assert.Equal(payload, responseDto.Observacao);
+            Assert.Equal(0, responseDto.Id);
             _pedidoServiceMock.Verify(s => s.Create(It.Is<PedidoDTO>(d => d.Observacao == payload)), Times.Once);
+            _pedidoServiceMock.VerifyNoOtherCalls();
         }
 
         [Fact]
@@ -136,6 +137,17 @@ namespace SIGO.Tests.Controllers
             var response = Assert.IsType<Response>(ok.Value);
             Assert.Equal(ResponseEnum.SUCCESS, response.Code);
             _pedidoServiceMock.Verify(s => s.Remove(5), Times.Once);
+        }
+
+        public static IEnumerable<object[]> ObservacaoPayloadsParaTdd()
+        {
+            yield return new object[] { "'; DROP TABLE pedido; --" };
+            yield return new object[] { "<script>alert('xss')</script>" };
+            yield return new object[] { "../../../../windows/system32" };
+            yield return new object[] { "$(rm -rf /)" };
+            yield return new object[] { string.Empty };
+            yield return new object[] { "   " };
+            yield return new object[] { new string('A', 5000) };
         }
 
         private static PedidoDTO CriarPedidoDto() => new()
