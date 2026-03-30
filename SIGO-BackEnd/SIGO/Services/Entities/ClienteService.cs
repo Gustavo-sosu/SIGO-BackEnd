@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SIGO.Data.Interfaces;
+using SIGO.Objects.Contracts;
 using SIGO.Objects.Dtos.Entities;
 using SIGO.Objects.Models;
 using SIGO.Services.Interfaces;
@@ -83,6 +84,14 @@ namespace SIGO.Services.Entities
                     }
                 }
             }
+
+        }
+        public async Task<ClienteDTO> Login(Login login)
+        {
+            var professor = await _clienteRepository.Login(login);
+
+            if (professor is not null) professor.Senha = ""; // Oculta a senha
+            return _mapper.Map<ClienteDTO>(professor);
         }
     }
 }

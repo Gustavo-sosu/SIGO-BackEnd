@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SIGO.Data.Interfaces;
+using SIGO.Objects.Contracts;
 using SIGO.Objects.Models;
 
 namespace SIGO.Data.Repositories
@@ -45,6 +46,11 @@ namespace SIGO.Data.Repositories
             await _context.Clientes.AddAsync(cliente);
             await _context.SaveChangesAsync();
             return cliente;
+        }
+
+        public async Task<Cliente> Login(Login login)
+        {
+            return await _context.Clientes.AsNoTracking().FirstOrDefaultAsync(p => p.Email == login.Email && p.Senha == login.Password);
         }
     }
 }
